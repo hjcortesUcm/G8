@@ -1,7 +1,7 @@
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 SET FOREIGN_KEY_CHECKS=0;
 
-USE `BistroFDI_G8`;
+USE `G8`;
 
 CREATE TABLE IF NOT EXISTS `categorias` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,

@@ -7,12 +7,12 @@ if (session_status() === PHP_SESSION_NONE) {
 
  //---- PARA LOCAL (XAMPP) ----
     define("DB_HOST", "localhost");
-    define("DB_USER", "root");
-    define("DB_PASS", "");
-    define("DB_NAME", "BistroFDI_G8");
+    define("DB_USER", "G8");
+    define("DB_PASS", "G8");
+    define("DB_NAME", "G8");
 
 
-    define('RUTA_APP', '/p1_g8');
+    define('RUTA_APP', '/AW/2026/Entregas/Proyecto/Grupo8/G8');
 
 /*
 //   ---- PARA EL VPS ----

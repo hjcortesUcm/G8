@@ -1,7 +1,7 @@
 
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 
-USE `BistroFDI_G8`;
+USE `G8`;
 
 INSERT INTO `categorias` (`nombre`, `descripcion`, `imagen`) VALUES
 ('Platos Principales','Platos principales del restaurante, como pastas, carnes y pizzas','platos_principales.jpg'),

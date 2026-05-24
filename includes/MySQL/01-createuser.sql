@@ -1,2 +1,2 @@
-CREATE USER IF NOT EXISTS 'bistro_user'@'localhost' IDENTIFIED BY '';
-GRANT ALL PRIVILEGES ON `BistroFDI_G8`.* TO 'bistro_user'@'localhost';
+CREATE USER IF NOT EXISTS 'G8'@'localhost' IDENTIFIED BY 'G8';
+GRANT ALL PRIVILEGES ON `G8`.* TO 'G8'@'localhost';
