@@ -125,35 +125,44 @@ class ProductoDAO {
         );
     }
 
-    public static function create($nombre, $descripcion, $categoria_id, $precio, $iva, $se_cocina = 1) {
-        global $conn;
+    public static function create($nombre, $descripcion, $categoria_id, $precio, $iva, $se_cocina = 1, $imagen = null) {
+    global $conn;
 
-        $disponible = 1;
-        $ofertado = 1;
+    $disponible = 1;
+    $ofertado = 1;
 
-        $stmt = $conn->prepare("
-            INSERT INTO productos
-            (nombre, descripcion, categoria_id, precio_base, iva, disponible, ofertado, se_cocina)
-            VALUES (?, ?, ?, ?, ?, ?, ? ,?)
-        ");
+    $stmt = $conn->prepare("
+        INSERT INTO productos
+        (nombre, descripcion, categoria_id, precio_base, iva, disponible, ofertado, se_cocina, imagen)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
 
-        $stmt->bind_param(
-            "ssidiiii",
-            $nombre,
-            $descripcion,
-            $categoria_id,
-            $precio,
-            $iva,
-            $disponible,
-            $ofertado,
-            $se_cocina
-        );
+    $stmt->bind_param(
+        "ssidiiiis",
+        $nombre,
+        $descripcion,
+        $categoria_id,
+        $precio,
+        $iva,
+        $disponible,
+        $ofertado,
+        $se_cocina,
+        $imagen
+    );
 
-        $ok = $stmt->execute();
+    $ok = $stmt->execute();
+
+    if (!$ok) {
         $stmt->close();
-
-        return $ok;
+        return false;
     }
+
+    $idNuevoProducto = $conn->insert_id;
+
+    $stmt->close();
+
+    return $idNuevoProducto;
+}
 
   public static function update(
 $id,

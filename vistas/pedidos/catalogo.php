@@ -11,6 +11,7 @@ require_once __DIR__ . '/../../entities/Producto.php';
 require_once __DIR__ . '/../../entities/Categoria.php';
 require_once __DIR__ . '/../../includes/Formulario/FormularioAddCarrito.php';
 require_once __DIR__ . '/../../includes/PedidoService.php';
+require_once __DIR__ . '/../../includes/AlergenoDAO.php';
 
 $user = require_login();
 if (!PedidoService::carritoTieneTipo()) {
@@ -96,6 +97,10 @@ ob_start();
 
 <table class="tabla-productos-movil">
 <thead>
+
+
+
+
 <tr>
 <th>Imagen</th>
 <th>Nombre</th>
@@ -150,6 +155,32 @@ ob_start();
 
 </div>
 
+<?php 
+
+$listaAlergenos=AlergenoDAO::getAll();
+
+?>
+
+<div class = "panel panel-alergenos">
+    <h3> informacion sobre alergenos </h3>
+    <p>
+        EN esta seccion puedes consultar el alergeno mostado en los productos. 
+
+    </p>
+    <div class = "lista-alergenos">
+     <?php foreach ($listaAlergenos as $a): ?>"class ="item-alergeno">
+        <img
+          src="<?= RUTA_APP ?>/img/alergenos/<?=escaparHtml($a->getIcono());?>
+          alt="<?= htmlspecialchars($a->getNombre()) ?>"
+          title="<?= htmlspecialchars($a->getNombre()) ?>"
+          class="icono-alergeno-grande">
+
+          <p><?=escaparHtml($a->getNombre())?></p>
+   
+    </div>
+    <?php endforeach; ?>
+</div>
+</div>
 </main>
 
 <?php

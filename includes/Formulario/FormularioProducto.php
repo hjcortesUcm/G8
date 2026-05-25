@@ -3,6 +3,7 @@ namespace es\ucm\fdi\aw\Formulario;
 
 require_once __DIR__.'/Formulario.php';
 require_once __DIR__.'/../ProductoDAO.php';
+require_once __DIR__.'/../AlergenoDAO.php';
 
 class FormularioProducto extends Formulario
 {
@@ -69,6 +70,10 @@ class FormularioProducto extends Formulario
             );
         }
 
+       
+
+
+        
         $imagenActualHTML='';
 
         if(!$this->isCreate && $this->producto){
@@ -90,6 +95,41 @@ class='img-rounded'>
 </p>";
             }
         }
+
+
+$alergenos = \AlergenoDAO::getActivos();
+
+$alergenosProductoIds = [];
+
+if ($this->producto) {
+    foreach (\AlergenoDAO::getByProducto($this->producto->getId()) as $alProducto) {
+        $alergenosProductoIds[] = $alProducto->getId();
+    }
+}
+
+$alergenosHTML = '';
+
+foreach ($alergenos as $al) {
+    $idAl = (int)$al->getId();
+
+    $checked = in_array($idAl, $alergenosProductoIds)
+        ? 'checked'
+        : '';
+
+    $nombreAl = htmlspecialchars($al->getNombre(), ENT_QUOTES, 'UTF-8');
+    $alergiasAl = htmlspecialchars($al->getAlergiasInfo(), ENT_QUOTES, 'UTF-8');
+
+    $alergenosHTML .= "
+        <label style='display:block; margin-bottom:6px;'>
+            <input
+            type='checkbox'
+            name='alergenos[]'
+            value='{$idAl}'
+            {$checked}>
+            {$nombreAl} - {$alergiasAl}
+        </label>
+    ";
+}
 
 return <<<HTML
 
@@ -163,6 +203,11 @@ value="1"
 Se prepara en cocina
 
 </label>
+</p>
+
+<p>
+<label><strong>Alergenos del producto:</strong></label><br>
+{$alergenosHTML}
 </p>
 
 
@@ -279,30 +324,59 @@ $nuevaImagen=
 
 /* si no sube nueva, conserva la anterior */
 
-$imagenGuardar=
-$nuevaImagen
-?? $this->producto->getImagen();
+$alergenosIds = $datos['alergenos'] ?? [];
+$alergenosIds = array_map('intval', $alergenosIds);
 
+if ($this->isCreate) {
 
-$ok=\ProductoDAO::update(
-$this->producto->getId(),
-$nombre,
-$descripcion,
-$categoria_id,
-$precio,
-$iva,
-$se_cocina,
-$imagenGuardar
-);
+    $imagenGuardar = $nuevaImagen ?? null;
 
+    $producto_id = \ProductoDAO::create(
+        $nombre,
+        $descripcion,
+        $categoria_id,
+        $precio,
+        $iva,
+        $se_cocina,
+        $imagenGuardar
+    );
 
-if(!$ok){
+    if (!$producto_id) {
+        $this->errores[] = 'No se pudo crear el producto';
+        return;
+    }
 
-$this->errores[]=
-'No se pudo guardar';
+    \AlergenoDAO::syncProductoAlergenos(
+        $producto_id,
+        $alergenosIds
+    );
 
-return;
+} else {
 
+    $imagenGuardar =
+        $nuevaImagen
+        ?? $this->producto->getImagen();
+
+    $ok = \ProductoDAO::update(
+        $this->producto->getId(),
+        $nombre,
+        $descripcion,
+        $categoria_id,
+        $precio,
+        $iva,
+        $se_cocina,
+        $imagenGuardar
+    );
+
+    if (!$ok) {
+        $this->errores[] = 'No se pudo guardar';
+        return;
+    }
+
+    \AlergenoDAO::syncProductoAlergenos(
+        $this->producto->getId(),
+        $alergenosIds
+    );
 }
 
 

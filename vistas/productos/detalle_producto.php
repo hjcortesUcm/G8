@@ -5,6 +5,8 @@ require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/application.php';
 require_once __DIR__ . '/../../includes/ProductoDAO.php';
 require_once __DIR__ . '/../../includes/CategoriaDAO.php';
+require_once __DIR__ . '/../../includes/AlergenoDAO.php';
+
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -14,6 +16,8 @@ if ($id <= 0) {
 }
 
 $producto = ProductoDAO::getById($id);
+$alergenos = AlergenoDAO::getByProducto($id);
+
 
 if (!$producto) {
     header('Location: ../pedidos/catalogo.php');
@@ -43,6 +47,29 @@ ob_start();
             <div class="producto-info">
                 <p><strong>Categoría:</strong> <?= htmlspecialchars($nombreCategoria) ?></p>
                 <p><strong>Descripción:</strong> <?= nl2br(htmlspecialchars($producto->getDescripcion())) ?></p>
+                <?php if (!empty($alergenos)): ?>
+
+    <p><strong>Alergenos:</strong></p>
+
+    <ul>
+        <?php foreach ($alergenos as $al): ?>
+            <li>
+                <?= htmlspecialchars($al->getNombre(), ENT_QUOTES, 'UTF-8') ?>
+
+                <?php if (trim($al->getAlergiasInfo()) !== '' && trim($al->getAlergiasInfo()) !== 'ninguna alergia'): ?>
+                    —
+                    <strong>Alergias:</strong>
+                    <?= htmlspecialchars($al->getAlergiasInfo(), ENT_QUOTES, 'UTF-8') ?>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+<?php else: ?>
+
+    <p><strong>Alergenos:</strong> No hay alergenos registrados.</p>
+
+<?php endif; ?>
                 <p><strong>Precio (sin IVA):</strong> <?= number_format((float)$producto->getPrecio(), 2) ?> €</p>
                 <p><strong>IVA:</strong> <?= (int)$producto->getIVA() ?>%</p>
                 <p class="precio-final">Precio Final: <?= number_format((float)$producto->getPrecioFinal(), 2) ?> €</p>

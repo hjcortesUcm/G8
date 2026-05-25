@@ -1,3 +1,7 @@
+<?php 
+$alergenosProducto = AlergenoDAO::getByProducto($p->getId());
+?>
+
 <tr>
 
 <td data-label="Imagen">
@@ -26,6 +30,8 @@ class="link-destacado">
 
 <td data-label="Descripción">
     <?= escaparHtml($p->getDescripcion()) ?>
+    
+        
 </td>
 
 <td data-label="Precio" class="col-precio">

@@ -1,7 +1,7 @@
 
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 
-USE `G8`;
+USE `BistroFDI_G88`;
 
 INSERT INTO `categorias` (`nombre`, `descripcion`, `imagen`) VALUES
 ('Platos Principales','Platos principales del restaurante, como pastas, carnes y pizzas','platos_principales.jpg'),
@@ -106,5 +106,31 @@ INSERT INTO `recompensas` (`producto_id`, `bistrocoins`, `activa`) VALUES
 (8, 10, 1),
 (9, 9, 1),
 (16, 12, 1);
+
+
+INSERT INTO `alergenos` (`id`, `nombre`,`activo`) VALUES
+(10, 'gluten',1),
+(4, 'huevos',1),
+(8, 'soja',1),
+(9, 'apio',1),
+(2, 'moluscos',1),
+(3, 'cacahuetes',1),
+(9, 'altramuces',1),
+(16, 'frutos de cascara',1);
+
+INSERT INTO `alergenos` (`nombre`,`icono`) VALUES
+('gluten','img/alergenos/gluten_48px.png'),
+('huevos','img/alergenos/huevos48px.png'),
+('soja','img/alergenos/soja_48px.png'),
+('apio','img/alergenos/apio_48px.png'),
+('moluscos','img/alergenos/moluscos_48px.png'),
+('cacahuetes','img/alergenos/cacahuetes_48px.png'),
+('altramuces','img/alergenos/altramuces_48px.png'),
+('frutos de cascara','img/alergenos/frutos-cascara_48px.png');
+
+
+
+
+
 
 UPDATE productos SET se_cocina = 0 WHERE categoria_id = 4;
