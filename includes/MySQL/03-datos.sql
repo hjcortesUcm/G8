@@ -1,7 +1,7 @@
 
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 
-USE `G8`;
+USE `BistroFDI_G8`;
 
 INSERT INTO `categorias` (`nombre`, `descripcion`, `imagen`) VALUES
 ('Platos Principales','Platos principales del restaurante, como pastas, carnes y pizzas','platos_principales.jpg'),
@@ -59,6 +59,44 @@ INSERT INTO `productos` (`nombre`, `descripcion`, `categoria_id`, `precio_base`,
 ('Helado Limón','Cucurucho de helado de limón',3,3.50,10,1,0,'img/img_productos/heladolimon.jpg',1),
 ('Zumo Piña','Zumo natural de piña',4,2.50,10,1,1,'img/img_productos/zumopina.jpg',0),
 ('Cerveza Roja','Cerveza ale 330ml',4,3.00,10,1,0,'img/img_productos/cervezaroja.jpg',0);
+
+
+
+INSERT INTO `alergenos` (`nombre`, `imagen`) VALUES
+('altramuces','img/iconos/altramuces.svg'),
+('apio','img/iconos/apio.svg'),
+('cacahuetes','img/iconos/cacahuetes.svg'),
+('crustaceos','img/iconos/crustaceos.svg'),
+('frutos-cascara','img/iconos/frutos-cascara.svg'),
+('gluten','img/iconos/gluten.svg'),
+('huevos','img/iconos/huevos.svg'),
+('lacteos','img/iconos/lacteos.svg'),
+('moluscos','img/iconos/moluscos.svg'),
+('mostaza','img/iconos/mostaza.svg'),
+('pescado','img/iconos/pescado.svg'),
+('sesamo','img/iconos/sesamo.svg'),
+('soja','img/iconos/soja.svg'),
+('sulfitos','img/iconos/sulfitos.svg');
+
+
+
+INSERT INTO `alergenos_en_productos` (`producto_id`, `alergeno_id`) VALUES
+('1','1'),
+('2','2'),
+('3','3'),
+('4','4'),
+('5','5'),
+('6','6'),
+('7','7'),
+('8','8'),
+('9','9'),
+('10','10'),
+('11','11'),
+('12','12'),
+('13','13'),
+('14','14');
+
+
 
 
 INSERT INTO `usuarios`(`username`, `email`, `nombre`, `apellidos`, `password_hash`, `rol`, `avatar_tipo`, `avatar_valor`, `activo`, `deleted_at`, `created_at`, `updated_at`, `bistrocoins`) VALUES

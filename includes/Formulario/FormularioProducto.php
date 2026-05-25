@@ -1,8 +1,13 @@
 <?php
+
 namespace es\ucm\fdi\aw\Formulario;
 
-require_once __DIR__.'/Formulario.php';
-require_once __DIR__.'/../ProductoDAO.php';
+require_once __DIR__ . '/Formulario.php';
+require_once __DIR__ . '/../ProductoDAO.php';
+require_once __DIR__ . '/../AlergenoDAO.php';
+require_once __DIR__ . '/../AlergenoProductoDAO.php';
+
+
 
 class FormularioProducto extends Formulario
 {
@@ -10,74 +15,81 @@ class FormularioProducto extends Formulario
     private $categoria_id;
     private $producto;
 
-    public function __construct(bool $isCreate,int $categoria_id,$producto=null)
+    public function __construct(bool $isCreate, int $categoria_id, $producto = null)
     {
         parent::__construct(
             'formProducto',
-            ['enctype'=>'multipart/form-data']
+            ['enctype' => 'multipart/form-data']
         );
 
-        $this->isCreate=$isCreate;
-        $this->categoria_id=$categoria_id;
-        $this->producto=$producto;
+        $this->isCreate = $isCreate;
+        $this->categoria_id = $categoria_id;
+        $this->producto = $producto;
     }
 
     protected function generaCamposFormulario(&$datos)
     {
-        $nombre=htmlspecialchars(
+        $nombre = htmlspecialchars(
             $datos['nombre'] ??
-            ($this->producto ? $this->producto->getNombre() : ''),
-            ENT_QUOTES,'UTF-8'
+                ($this->producto ? $this->producto->getNombre() : ''),
+            ENT_QUOTES,
+            'UTF-8'
         );
 
-        $descripcion=htmlspecialchars(
+        $descripcion = htmlspecialchars(
             $datos['descripcion'] ??
-            ($this->producto ? $this->producto->getDescripcion() : ''),
-            ENT_QUOTES,'UTF-8'
+                ($this->producto ? $this->producto->getDescripcion() : ''),
+            ENT_QUOTES,
+            'UTF-8'
         );
 
-        $precio=htmlspecialchars(
-            (string)(
+        $precio = htmlspecialchars(
+            (string) (
                 $datos['precio'] ??
                 ($this->producto ? $this->producto->getPrecio() : '')
             ),
-            ENT_QUOTES,'UTF-8'
+            ENT_QUOTES,
+            'UTF-8'
         );
 
-        $iva=(int)(
+        $iva = (int) (
             $datos['iva'] ??
             ($this->producto ? $this->producto->getIVA() : 21)
         );
 
-        $selected4=$iva===4?'selected':'';
-        $selected10=$iva===10?'selected':'';
-        $selected21=$iva===21?'selected':'';
+        $selected4 = $iva === 4 ? 'selected' : '';
+        $selected10 = $iva === 10 ? 'selected' : '';
+        $selected21 = $iva === 21 ? 'selected' : '';
 
-        $seCocinaChecked=
+        $seCocinaChecked =
             ($this->producto &&
-             method_exists($this->producto,'getSeCocina') &&
-             $this->producto->getSeCocina())
+                method_exists($this->producto, 'getSeCocina') &&
+                $this->producto->getSeCocina())
             ? 'checked'
             : '';
 
-        $precioFinal='';
+        $precioFinal = '';
 
-        if($precio!=='' && is_numeric($precio)){
-            $precioFinal=number_format(
-                ((float)$precio)*(1+($iva/100)),
-                2,'.',''
+        if ($precio !== '' && is_numeric($precio)) {
+            $precioFinal = number_format(
+                ((float) $precio) * (1 + ($iva / 100)),
+                2,
+                '.',
+                ''
             );
         }
 
-        $imagenActualHTML='';
 
-        if(!$this->isCreate && $this->producto){
 
-            $img=trim((string)$this->producto->getImagen());
+        $imagenActualHTML = '';
 
-            if($img!==''){
+        if (!$this->isCreate && $this->producto) {
 
-                $imagenActualHTML="
+            $img = trim((string) $this->producto->getImagen());
+
+            if ($img !== '') {
+
+                $imagenActualHTML = "
 <p>
 <strong>Imagen actual:</strong><br>
 
@@ -91,7 +103,43 @@ class='img-rounded'>
             }
         }
 
-return <<<HTML
+        $alergenos = \AlergenoDAO::getAll();
+
+        $alergenosProductoIds = [];
+
+        if ($this->producto) {
+            foreach (\AlergenoDAO::getById($this->producto->getId()) as $aProducto) {
+                $alergenosProductoIds[] = $aProducto->getId();
+            }
+        }
+
+        $alergenosHTML = '';
+
+        foreach ($alergenos as $a) {
+            $idAlergeno = (int)$a->getId();
+
+            $checked = in_array($idAlergeno, $alergenosProductoIds)
+                ? 'checked'
+                : '';
+
+            $nombreAlergeno = htmlspecialchars($a->getNombre(), ENT_QUOTES, 'UTF-8');
+
+            $alergenosHTML .= "
+        <label>
+            <input
+            type='checkbox'
+            name='alergenos[]'
+            value='{$idAlergeno}'
+            {$checked}>
+            {$nombreAlergeno}
+        </label>
+    ";
+        }
+
+
+        return <<<HTML
+
+
 
 <p>
 <label>Nombre:</label><br>
@@ -166,6 +214,17 @@ Se prepara en cocina
 </p>
 
 
+
+<p>
+<label><strong>Alergenos del producto:</strong></label><br>
+{$alergenosHTML}
+</p>
+
+
+
+<br>
+
+
 {$imagenActualHTML}
 
 
@@ -221,95 +280,86 @@ recalcular();
 </script>
 
 HTML;
-
     }
 
 
-protected function procesaFormulario(&$datos)
-{
-$this->errores=[];
 
-$nombre=trim($datos['nombre']);
-$descripcion=trim($datos['descripcion']);
+    protected function procesaFormulario(&$datos)
+    {
+        $this->errores = [];
 
-$precio=(float)$datos['precio'];
-$iva=(int)$datos['iva'];
+        $nombre = trim($datos['nombre']);
+        $descripcion = trim($datos['descripcion']);
+        $precio = (float) $datos['precio'];
+        $iva = (int) $datos['iva'];
+        $categoria_id = (int) $datos['categoria_id'];
+        $se_cocina = isset($datos['se_cocina']) ? 1 : 0;
 
-$categoria_id=(int)$datos['categoria_id'];
+        $nuevaImagen = null;
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0) {
+            $nombreFinal = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '', basename($_FILES['imagen']['name']));
+            $rutaDestino = __DIR__ . '/../../img/img_productos/' . $nombreFinal;
 
-$se_cocina=
-isset($datos['se_cocina'])?1:0;
+            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
+                $nuevaImagen = 'img/img_productos/' . $nombreFinal;
+            }
+        }
 
+        $alergenosIds = $datos['alergenos'] ?? [];
+        $alergenosIds = array_map('intval', $alergenosIds);
 
-/* SUBIR NUEVA IMAGEN */
+        if ($this->isCreate) {
 
-$nuevaImagen=null;
+            $imagenGuardar = $nuevaImagen ?? null;
 
-if(
-isset($_FILES['imagen']) &&
-$_FILES['imagen']['error']===0
-){
+            $producto_id = \ProductoDAO::create(
+                $nombre,
+                $descripcion,
+                $categoria_id,
+                $precio,
+                $iva,
+                $se_cocina,
+                $imagenGuardar
+            );
 
-$nombreFinal=
-time().'_'.
-preg_replace(
-'/[^A-Za-z0-9._-]/',
-'',
-basename($_FILES['imagen']['name'])
-);
+            if (!$producto_id) {
+                $this->errores[] = 'No se pudo crear el producto';
+                return;
+            }
 
-$rutaDestino=
-__DIR__.'/../../img/img_productos/'.
-$nombreFinal;
+            \AlergenoProductoDAO::updateAlergenosProducto(
+                $producto_id,
+                $alergenosIds
+            );
+        } else {
 
-if(
-move_uploaded_file(
-$_FILES['imagen']['tmp_name'],
-$rutaDestino
-)
-){
+            $imagenGuardar =
+                $nuevaImagen
+                ?? $this->producto->getImagen();
 
-$nuevaImagen=
-'img/img_productos/'.$nombreFinal;
+            $ok = \ProductoDAO::update(
+                $this->producto->getId(),
+                $nombre,
+                $descripcion,
+                $categoria_id,
+                $precio,
+                $iva,
+                $se_cocina,
+                $imagenGuardar
+            );
 
-}
+            if (!$ok) {
+                $this->errores[] = 'No se pudo guardar';
+                return;
+            }
 
-}
-
-
-/* si no sube nueva, conserva la anterior */
-
-$imagenGuardar=
-$nuevaImagen
-?? $this->producto->getImagen();
-
-
-$ok=\ProductoDAO::update(
-$this->producto->getId(),
-$nombre,
-$descripcion,
-$categoria_id,
-$precio,
-$iva,
-$se_cocina,
-$imagenGuardar
-);
-
-
-if(!$ok){
-
-$this->errores[]=
-'No se pudo guardar';
-
-return;
-
-}
+            \AlergenoProductoDAO::updateAlergenosProducto(
+                $this->producto->getId(),
+                $alergenosIds
+            );
+        }
 
 
-$this->urlRedireccion=
-'mostrarProductosCategoria.php?id='.
-$categoria_id;
-
-}
-
+        $this->urlRedireccion = 'mostrarProductosCategoria.php?id=' . $categoria_id;
+    }
 }

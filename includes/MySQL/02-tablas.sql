@@ -1,7 +1,7 @@
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 SET FOREIGN_KEY_CHECKS=0;
 
-USE `G8`;
+USE `BistroFDI_G8`;
 
 CREATE TABLE IF NOT EXISTS `categorias` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,6 +24,29 @@ CREATE TABLE IF NOT EXISTS `productos` (
     `se_cocina` BOOLEAN DEFAULT 1,
     FOREIGN KEY (`categoria_id`) REFERENCES `categorias`(`id`)
 );
+
+
+CREATE TABLE IF NOT EXISTS `alergenos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre` VARCHAR(100),
+    `imagen` VARCHAR(255) DEFAULT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS `alergenos_en_productos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `producto_id` INT NOT NULL,
+    `alergeno_id` INT NOT NULL,
+    
+    FOREIGN KEY (`alergeno_id`) REFERENCES `alergenos`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`producto_id`) REFERENCES `productos`(`id`) ON DELETE CASCADE,
+
+    UNIQUE (alergeno_id, producto_id)
+);
+
+
+
+
 
 CREATE TABLE IF NOT EXISTS `usuarios` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
