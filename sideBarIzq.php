@@ -40,6 +40,7 @@ $user = function_exists('current_user') ? current_user() : null;
             <!-- Panel Gerente: Solo Gerente -->
             <?php if ($user->getRol() === 'gerente'): ?>
                 <li><a href="<?= RUTA_APP ?>/vistas/preparacion_pedidos/panel_gerente.php">Panel Gerente</a></li>
+                <li><a href="<?= RUTA_APP ?>/vistas/alergias/mostrarAlergias.php">Alergias</a></li>
             <?php endif; ?>
                 
         <?php endif; ?>

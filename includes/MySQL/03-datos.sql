@@ -1,7 +1,7 @@
 
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 
-USE `G8`;
+USE `BistroFDI_G8`;
 
 INSERT INTO `categorias` (`nombre`, `descripcion`, `imagen`) VALUES
 ('Platos Principales','Platos principales del restaurante, como pastas, carnes y pizzas','platos_principales.jpg'),
@@ -106,5 +106,33 @@ INSERT INTO `recompensas` (`producto_id`, `bistrocoins`, `activa`) VALUES
 (8, 10, 1),
 (9, 9, 1),
 (16, 12, 1);
+
+
+
+INSERT INTO `alergias` (`nombre`, `imagen`) VALUES
+('Gluten','img/iconos/gluten_48px.png'),
+('Crustáceos','img/iconos/crustaceos_48px.png'),
+('Huevos','img/iconos/huevos_48px.png'),
+('Pescado','img/iconos/pescado_48px.png'),
+('Cacahuetes','img/iconos/cacahuetes_48px.png'),
+('Soja','img/iconos/soja_48px.png'),
+('Lácteos','img/iconos/lacteos_48px.png'),
+('Frutos de cáscara','img/iconos/frutos-cascara_48px.png'),
+('Apio','img/iconos/apio_48px.png'),
+('Mostaza','img/iconos/mostaza_48px.png'),
+('Granos de sésamo','img/iconos/sesamo_48px.png'),
+('Dióxido de azufre y sulfitos','img/iconos/sulfitos_48px.png'),
+('Moluscos','img/iconos/moluscos_48px.png'),
+('Altramuces','img/iconos/altramuces_48px.png');
+
+
+/*
+INSERT INTO `alergias_en_producto` (`producto_id`, `ingrediente_id`) VALUES
+('1','1','100','gr'),
+('1','2','50','gr'),
+('1','3','25','gr');
+*/
+
+
 
 UPDATE productos SET se_cocina = 0 WHERE categoria_id = 4;

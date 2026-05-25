@@ -11,6 +11,9 @@ require_once __DIR__ . '/../../entities/Producto.php';
 require_once __DIR__ . '/../../entities/Categoria.php';
 require_once __DIR__ . '/../../includes/Formulario/FormularioAddCarrito.php';
 require_once __DIR__ . '/../../includes/PedidoService.php';
+require_once __DIR__ . '/../../includes/AlergiasDAO.php';
+
+$alergias = AlergiasDAO::getAll();
 
 $user = require_login();
 if (!PedidoService::carritoTieneTipo()) {
@@ -145,6 +148,29 @@ ob_start();
 <?php endforeach; ?>
 
 </div>
+
+
+<h1>Lista de alergias</h1>
+
+<?php if (empty($alergias)): ?>
+    <p>No hay alergias.</p>
+<?php else: ?>
+    <table class="tabla tabla-movil">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Imagen</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($alergias as $cat): ?>
+                <?php require __DIR__ . '/../alergias/_fila_alergia_catalogo.php'; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>
 
 <?php endif; ?>
 

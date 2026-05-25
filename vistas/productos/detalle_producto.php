@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/application.php';
 require_once __DIR__ . '/../../includes/ProductoDAO.php';
 require_once __DIR__ . '/../../includes/CategoriaDAO.php';
+require_once __DIR__ . '/../../includes/AlergiaEnProductoDAO.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -22,6 +23,7 @@ if (!$producto) {
 
 $categoria = CategoriaDAO::getById($producto->getCategoriaId());
 $nombreCategoria = $categoria ? $categoria->getNombre() : 'Sin categoría';
+$alergias = AlergiaEnProductoDAO::getAlergiasProducto($id);
 
 $tituloPagina = 'Detalle de Producto | Bistro FDI';
 $rutaCSS = RUTA_APP . '/CSS/estilo.css';
@@ -32,21 +34,39 @@ ob_start();
 <main>
     <div class="panel">
         <h2>Detalles de <?= htmlspecialchars($producto->getNombre()) ?></h2>
-        
+
         <div class="producto-detalle-contenedor">
             <?php if ($producto->getImagen()): ?>
                 <div class="producto-imagen">
                     <img src="<?= htmlspecialchars(RUTA_APP . '/' . $producto->getImagen()) ?>" alt="<?= htmlspecialchars($producto->getNombre()) ?>">
                 </div>
             <?php endif; ?>
-            
+
             <div class="producto-info">
                 <p><strong>Categoría:</strong> <?= htmlspecialchars($nombreCategoria) ?></p>
                 <p><strong>Descripción:</strong> <?= nl2br(htmlspecialchars($producto->getDescripcion())) ?></p>
+
+                <?php if (!empty($alergias)): ?>
+                    <p><strong>Alergias:</strong></p>
+                    <ul class="lista-caracteristicas">
+                        <?php foreach ($alergias as $a): ?>
+                            <li>
+                                <?= htmlspecialchars($a->getNombre()) ?>
+                                <img src="<?= htmlspecialchars(RUTA_APP . '/' . $a->getImagen()) ?>" alt="<?= htmlspecialchars($a->getNombre()) ?>">
+                                <a
+                                    class="btn primary"
+                                    href="../alergias/detalle_Alergia.php?id=<?= (int)$a->getId() ?>&producto_id=<?= (int)$producto_id ?>">
+                                    Ver detalles
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+
                 <p><strong>Precio (sin IVA):</strong> <?= number_format((float)$producto->getPrecio(), 2) ?> €</p>
                 <p><strong>IVA:</strong> <?= (int)$producto->getIVA() ?>%</p>
                 <p class="precio-final">Precio Final: <?= number_format((float)$producto->getPrecioFinal(), 2) ?> €</p>
-                
+
                 <div class="actions-inline mt-14">
                     <a href="javascript:history.back()" class="btn">← Volver</a>
                 </div>

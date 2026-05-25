@@ -25,6 +25,12 @@ if (!$categoria) {
 require_once __DIR__ . '/../../includes/ProductoDAO.php';
 $productos = ProductoDAO::getAllByCategoria($categoria_id);
 
+// foreach ($productos as $p) {
+//     $alergias=AlergiaEnProductoDAO::getAlergiasProducto($p->getId());
+// }
+
+
+
 $tituloPagina = 'Productos';
 $rutaCSS = '../../CSS/estilo.css';
 

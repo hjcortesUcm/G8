@@ -19,6 +19,7 @@ class="img-rounded">
 <?= htmlspecialchars($p->getDescripcion()) ?>
 </p>
 
+
 <p>
 <strong>Precio base:</strong>
 <?= number_format((float)$p->getPrecio(),2) ?> €
@@ -43,6 +44,12 @@ class="img-rounded">
 class="btn primary"
 href="crearProducto.php?id=<?= (int)$p->getId() ?>&categoria_id=<?= (int)$categoria_id ?>">
 Editar
+</a>
+
+<a
+class="btn primary"
+href="detalle_Producto.php?id=<?= (int)$p->getId() ?>&categoria_id=<?= (int)$categoria_id ?>">
+Ver detalles
 </a>
 
 </div>
