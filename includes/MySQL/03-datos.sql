@@ -1,13 +1,29 @@
 
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 
-USE `G8`;
+USE `BistroFDI_G8`;
 
 INSERT INTO `categorias` (`nombre`, `descripcion`, `imagen`) VALUES
 ('Platos Principales','Platos principales del restaurante, como pastas, carnes y pizzas','platos_principales.jpg'),
 ('Entrantes y Ensaladas','Entrantes ligeros y ensaladas frescas','entrantes_ensaladas.jpg'),
 ('Postres','Postres caseros y dulces para finalizar la comida','postres.jpg'),
 ('Bebidas','Bebidas frías y calientes, alcohólicas y no alcohólicas','bebidas.jpg');
+
+INSERT INTO `alergenos` (`nombre`, `icono_pequeño`, `icono_grande`) VALUES
+('Gluten','img/iconos/gluten_48px.png','img/iconos/gluten_96px.png'),
+('Crustáceos','img/iconos/crustaceos_48px.png','img/iconos/crustaceos_96px.png'),
+('Huevos','img/iconos/huevos_48px.png','img/iconos/huevos_96px.png'),
+('Pescado','img/iconos/pescado_48px.png','img/iconos/pescado_96px.png'),
+('Cacahuetes','img/iconos/cacahuetes.png','img/iconos/cacahuetes_96px.png'),
+('Soja','img/iconos/soja_48px.png','img/iconos/soja_96px.png'),
+('Lácteos','img/iconos/lacteos_48px.png','img/iconos/lacteos_96px.png'),
+('Frutos de cáscara','img/iconos/futos-cascara_48px.png','img/iconos/frutos-cascara_96px.png'),
+('Apio','img/iconos/apio_48px.png','img/iconos/apio_96px.png'),
+('Mostaza','img/iconos/mostaza_48px.png','img/iconos/mostaza_96px.png'),
+('Granos de sésamo','img/iconos/granosdesesamo_48px.png','img/iconos/granosdesesamo_96px.png'),
+('Dióxido de azufre y sulfitos','img/iconos/sulfitos_48px.png','img/iconos/sulfitos_96px.png'),
+('Moluscos','img/iconos/moluscos_48px.png','img/iconos/moluscos_96px.png'),
+('Altramuces','img/iconos/altramuces_48px.png','img/iconos/altramuces_96px.png'),
 
 INSERT INTO `productos` (`nombre`, `descripcion`, `categoria_id`, `precio_base`, `iva`, `disponible`, `ofertado`, `imagen`, `se_cocina`) VALUES
 ('Pizza Margherita','Pizza clásica con tomate, mozzarella y albahaca',1,8.50,10,1,1,'img/img_productos/pizza-margarita.jpg',1),
@@ -70,13 +86,9 @@ INSERT INTO `usuarios`(`username`, `email`, `nombre`, `apellidos`, `password_has
 
 INSERT INTO `ofertas` (`nombre`, `descripcion`, `fecha_inicio`, `fecha_fin`, `descuento`) VALUES
 ('Desayuno Simple', 'Café + tostada (simulado con ensalada básica)', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 20.00),
-
 ('Menú Italiano', 'Pizza + bebida con descuento', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 15.00),
-
 ('Menú Burger', 'Hamburguesa + refresco', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 18.00),
-
 ('Postre + Café', 'Postre con café a precio reducido', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 25.00),
-
 ('Menú Saludable', 'Ensalada + zumo natural', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 12.00);
 
 

@@ -1,0 +1,2 @@
+no me ha dado tiempo a acabarlo, he implementado algunas partes de todo.
+faltaria añadir todas las funcionalidades nuevas creadas en el codigo.

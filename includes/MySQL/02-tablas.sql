@@ -1,7 +1,26 @@
 /* Deshabilitar la revisión de las claves foráneas en phpMyAdmin */
 SET FOREIGN_KEY_CHECKS=0;
 
-USE `G8`;
+USE `BistroFDI_G8`;
+
+CREATE TABLE IF NOT EXISTS `alergenos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre` VARCHAR(100),
+    `icono_pequeño` VARCHAR(255) DEFAULT NULL,
+    `icono_grande` VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `producto_alergenos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+
+    `producto_id` INT NOT NULL,
+    `alergeno_id` INT NOT NULL,
+    
+    FOREIGN KEY (`producto_id`) REFERENCES `prodcuto`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`alergeno_id`) REFERENCES `alergenos`(`id`) ON DELETE CASCADE,
+
+    UNIQUE (producto_id, alergeno_id)
+);
 
 CREATE TABLE IF NOT EXISTS `categorias` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -69,7 +88,6 @@ CREATE TABLE IF NOT EXISTS `pedidos`(
     FOREIGN KEY (cocinero_id) REFERENCES usuarios(id),
     FOREIGN KEY (camarero_id) REFERENCES usuarios(id)
 );
-
 
 CREATE TABLE IF NOT EXISTS `productos_en_pedido` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
